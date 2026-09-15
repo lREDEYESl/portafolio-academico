@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     request.setAttribute("pageTitle", "Login | Portafolio Académico");
@@ -8,18 +8,22 @@
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
 </head>
-<body>
+<body class="arcade-boot">
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>
 
     <main>
         <section class="section">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-md-6 col-lg-5">
-                        <article class="card-app">
+                    <div class="col-md-7 col-lg-5">
+                        <article class="crt-terminal">
+                            <div class="crt-terminal-bar">
+                                <span>SYS://AUTH</span>
+                                <span class="crt-dots" aria-hidden="true"></span>
+                            </div>
                             <p class="section-kicker">Player 1</p>
                             <p class="press-start blink">PRESS START</p>
-                            <h1 class="section-title">Iniciar sesión</h1>
+                            <h1 class="section-title crt-title">Iniciar sesión</h1>
                             <div class="hud-bar" aria-hidden="true"><span></span></div>
                             <p class="section-subtitle mb-4">Ingresa con tu cuenta institucional para administrar el portafolio.</p>
 
@@ -53,7 +57,7 @@
                                     <input class="form-control" type="password" id="password" name="password"
                                            required autocomplete="current-password">
                                 </div>
-                                <button class="btn btn-primary-app w-100" type="submit" aria-label="Iniciar sesión">
+                                <button class="btn btn-primary-app btn-insert-coin w-100" type="submit" aria-label="Iniciar sesión">
                                     <i class="fa-solid fa-play" aria-hidden="true"></i> START
                                 </button>
                             </form>

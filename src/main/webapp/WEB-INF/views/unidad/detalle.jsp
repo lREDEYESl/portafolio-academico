@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -17,6 +17,7 @@
                 </span>
                 <h1 class="section-title"><c:out value="${unidad.titulo}"/></h1>
                 <p class="section-subtitle mb-0"><c:out value="${unidad.descripcion}"/></p>
+                <jsp:include page="/WEB-INF/views/includes/week-rail.jsp"/>
             </div>
         </section>
 
@@ -27,9 +28,11 @@
                         <article class="card-app h-100">
                             <p class="section-kicker">Descripción</p>
                             <h2 class="h4 mb-3">Qué se trabaja en esta unidad</h2>
+                            <%@ include file="/WEB-INF/views/includes/unit-quest.jsp" %>
+                            <p class="text-muted-app mb-3"><c:out value="${questUnitLore}"/></p>
                             <p class="text-muted-app mb-4"><c:out value="${unidad.descripcion}"/></p>
                             <p class="section-kicker">Video de apoyo</p>
-                            <div class="ratio ratio-16x9 unit-video">
+                            <div class="ratio ratio-16x9 unit-video cyber-video">
                                 <c:choose>
                                     <c:when test="${unidad.id == 1}">
                                         <iframe src="https://www.youtube.com/embed/ElMnHDSFaCw"
@@ -83,11 +86,13 @@
 
                 <div class="row g-4">
                     <c:forEach var="semana" items="${semanas}" varStatus="status">
+                    <%@ include file="/WEB-INF/views/includes/week-quest.jsp" %>
                     <div class="col-12 col-md-6">
                         <article class="card-app week-card h-100">
                             <span class="unit-index">Semana 0${status.count}</span>
-                            <h3 class="unit-title"><c:out value="${semana.titulo}"/></h3>
-                            <p class="unit-text"><c:out value="${semana.contenido}"/></p>
+                            <h3 class="unit-title"><c:out value="${questWeekTitle}"/></h3>
+                            <p class="unit-text"><c:out value="${questWeekLore}"/></p>
+                            <p class="unit-meta"><c:out value="${semana.titulo}"/></p>
                             <a class="btn btn-outline-app mt-auto" href="${pageContext.request.contextPath}/semana/detalle?id=${semana.id}">
                                 Ver semana <i class="fa-solid fa-arrow-right"></i>
                             </a>

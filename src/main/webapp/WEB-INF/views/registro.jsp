@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     request.setAttribute("pageTitle", "Solicitar acceso | Portafolio Académico");
@@ -8,18 +8,22 @@
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
 </head>
-<body>
+<body class="arcade-boot">
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>
 
     <main>
         <section class="section">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-md-6 col-lg-5">
-                        <article class="card-app">
+                    <div class="col-md-7 col-lg-5">
+                        <article class="crt-terminal">
+                            <div class="crt-terminal-bar">
+                                <span>SYS://NEW PLAYER</span>
+                                <span class="crt-dots" aria-hidden="true"></span>
+                            </div>
                             <p class="section-kicker">New player</p>
                             <p class="press-start blink">INSERT COIN</p>
-                            <h1 class="section-title">Solicitar acceso</h1>
+                            <h1 class="section-title crt-title">Solicitar acceso</h1>
                             <div class="hud-bar" aria-hidden="true"><span></span></div>
                             <p class="section-subtitle mb-4">
                                 Tu cuenta quedará como USUARIO en estado PENDIENTE hasta que un administrador la apruebe.
@@ -51,8 +55,8 @@
                                     <label class="form-label" for="password">Password</label>
                                     <input class="form-control" type="password" id="password" name="password" required minlength="6">
                                 </div>
-                                <button class="btn btn-primary-app w-100" type="submit">
-                                    <i class="fa-solid fa-paper-plane"></i> Enviar solicitud
+                                <button class="btn btn-primary-app btn-insert-coin w-100" type="submit">
+                                    <i class="fa-solid fa-paper-plane"></i> ENVIAR SOLICITUD
                                 </button>
                             </form>
                             <p class="text-center mt-4 mb-0">

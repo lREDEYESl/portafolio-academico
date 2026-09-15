@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%
     String ctx = request.getContextPath();
 %>
@@ -53,3 +53,4 @@
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script src="<%= ctx %>/assets/js/app.js"></script>
 <script src="<%= ctx %>/assets/js/retro-effects.js"></script>
+<script src="<%= ctx %>/assets/js/cyber-deck.js"></script>

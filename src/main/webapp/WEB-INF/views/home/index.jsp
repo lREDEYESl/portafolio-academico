@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%
     request.setAttribute("pageTitle", "Inicio | Portafolio Académico");
     String ctx = request.getContextPath();
@@ -23,7 +23,7 @@
                         </span>
                         <h1 class="hero-title">
                             Hola, soy
-                            <span class="hero-name">Tu Nombre</span>
+                            <span class="hero-name">Rogger Palma</span>
                         </h1>
                         <p class="hero-career">Ingeniería de Sistemas</p>
                         <p class="hero-lead">
@@ -31,7 +31,7 @@
                             tareas y evidencias, con una arquitectura MVC en Java, JSP y Tomcat.
                         </p>
                         <div class="d-flex flex-wrap gap-3">
-                            <a class="btn btn-primary-app" href="<%= ctx %>/unidades">
+                            <a class="btn btn-primary-app btn-insert-coin" href="<%= ctx %>/unidades">
                                 <i class="fa-solid fa-book-open"></i> Ver unidades
                             </a>
                             <a class="btn btn-outline-app" href="#sobre-mi">
@@ -40,8 +40,21 @@
                         </div>
                     </div>
                     <div class="col-lg-5">
-                        <div class="hero-panel card-app">
-                            <div class="row g-3">
+                        <div class="hero-panel card-app player-card">
+                            <p class="section-kicker mb-3">Stats del jugador</p>
+                            <div class="player-stat">
+                                <span>HP // Persistencia</span>
+                                <div class="xp-bar" aria-hidden="true"><i style="width:92%"></i></div>
+                            </div>
+                            <div class="player-stat">
+                                <span>XP // Arquitectura</span>
+                                <div class="xp-bar" aria-hidden="true"><i style="width:78%"></i></div>
+                            </div>
+                            <div class="player-stat">
+                                <span>MP // Redes y SO</span>
+                                <div class="xp-bar" aria-hidden="true"><i style="width:84%"></i></div>
+                            </div>
+                            <div class="row g-3 mt-1">
                                 <div class="col-6">
                                     <div class="stat-item">
                                         <span class="stat-value">04</span>
@@ -50,7 +63,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="stat-item">
-                                        <span class="stat-value">16</span>
+                                        <span class="stat-value">15</span>
                                         <span class="stat-label">Semanas</span>
                                     </div>
                                 </div>
@@ -78,7 +91,7 @@
                 <div class="row align-items-center g-5">
                     <div class="col-lg-5">
                         <div class="about-photo-frame">
-                            <img src="<%= ctx %>/assets/img/perfil.jpg" alt="Foto de perfil" class="about-photo">
+                            <img src="<%= ctx %>/assets/img/perfil.jpg" alt="Foto de perfil de Rogger Palma" class="about-photo">
                         </div>
                     </div>
                     <div class="col-lg-7">
@@ -98,6 +111,46 @@
                             <li><i class="fa-solid fa-check"></i> Organización por unidades y semanas</li>
                             <li><i class="fa-solid fa-check"></i> Evidencias listas para revisión académica</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="logros" class="section pt-0">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <p class="section-kicker">Logros 8-BIT</p>
+                    <h2 class="section-title">Laboratorio de Ingeniería</h2>
+                    <p class="section-subtitle mx-auto">Insignias de práctica real: redes, modelado, servidores y bajo nivel.</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-xl-3">
+                        <article class="card-app badge-8bit h-100">
+                            <span class="skill-icon"><i class="fa-solid fa-network-wired"></i></span>
+                            <h3 class="skill-title">Packet Tracer</h3>
+                            <p class="skill-text">Simulación de Redes LAN en Cisco Packet Tracer: VLANs, DHCP y ruteo básico.</p>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <article class="card-app badge-8bit h-100">
+                            <span class="skill-icon"><i class="fa-solid fa-diagram-project"></i></span>
+                            <h3 class="skill-title">UML</h3>
+                            <p class="skill-text">UML en Enterprise Architect: casos de uso, clases, secuencia y componentes.</p>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <article class="card-app badge-8bit h-100">
+                            <span class="skill-icon"><i class="fa-brands fa-linux"></i></span>
+                            <h3 class="skill-title">Linux</h3>
+                            <p class="skill-text">Servidores Linux: Apache/Tomcat, systemd, permisos y despliegue de WAR.</p>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <article class="card-app badge-8bit h-100">
+                            <span class="skill-icon"><i class="fa-solid fa-microchip"></i></span>
+                            <h3 class="skill-title">TASM</h3>
+                            <p class="skill-text">TASM Assembly: registros, interrupciones y lógica a bajo nivel.</p>
+                        </article>
                     </div>
                 </div>
             </div>
@@ -217,7 +270,7 @@
                         <h2 class="section-title mb-2">Explora el trabajo por unidades</h2>
                         <p class="section-subtitle mb-0">Semanas, tareas y archivos organizados para una revisión clara.</p>
                     </div>
-                    <a class="btn btn-primary-app" href="<%= ctx %>/unidades">
+                    <a class="btn btn-primary-app btn-insert-coin" href="<%= ctx %>/unidades">
                         <i class="fa-solid fa-arrow-right"></i> Ir a unidades
                     </a>
                 </div>

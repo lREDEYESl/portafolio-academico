@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
@@ -15,22 +15,27 @@
                 <jsp:include page="/WEB-INF/views/includes/breadcrumb.jsp"/>
                 <span class="hero-badge mb-3">
                     <i class="fa-solid fa-calendar-week"></i>
-                    Unidad 0<c:out value="${unidad.id}"/> · Semana 0<c:out value="${semana.id}"/>
+                    Unidad 0<c:out value="${unidad.id}"/> · <c:out value="${semana.titulo}"/>
                 </span>
-                <h1 class="section-title"><c:out value="${semana.titulo}"/></h1>
+                <%@ include file="/WEB-INF/views/includes/unit-quest.jsp" %>
+                <%@ include file="/WEB-INF/views/includes/week-quest.jsp" %>
+                <h1 class="section-title"><c:out value="${questWeekTitle}"/></h1>
                 <p class="section-subtitle mb-0">
                     Contenido teórico, tareas y archivos de esta semana en
                     <strong><c:out value="${unidad.titulo}"/></strong>.
                 </p>
+                <p class="section-subtitle lore-copy">
+                    <c:out value="${questWeekLore}"/>
+                </p>
+                <jsp:include page="/WEB-INF/views/includes/week-rail.jsp"/>
             </div>
         </section>
 
         <section class="section pt-0">
             <div class="container">
-                <div class="card bg-dark border-secondary text-light mb-4 shadow-sm">
-                    <div class="card-body text-light">
-                        <h2 class="h4 mb-3 text-light">
-                            <i class="fa-solid fa-lightbulb me-2 text-info"></i>Puntos Clave de la Semana
+                    <div class="neon-panel puntos-clave-panel">
+                        <h2 class="lore-title">
+                            <i class="fa-solid fa-lightbulb me-2"></i>Puntos Clave de la Semana
                         </h2>
                         <c:choose>
                             <c:when test="${semana.titulo == 'Semana 1'}">
@@ -145,20 +150,18 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
-                </div>
 
-                <h4 class="text-light mt-4 mb-3"><i class="fas fa-tasks me-2"></i>Entregables y Tareas</h4>
-                <c:choose>
-                    <c:when test="${empty tareas}">
-                        <div class="alert alert-secondary">
-                            <span class="alert-hud">NO QUEST</span>
-                            No hay tareas asignadas para esta semana.
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="tarea" items="${tareas}">
-                            <div class="card bg-dark border-secondary text-light mb-3 shadow-sm task-card">
-                                <div class="card-body">
+                    <h4 class="lore-title mt-4 mb-3"><i class="fas fa-tasks me-2"></i>Entregables y Tareas</h4>
+                    <c:choose>
+                        <c:when test="${empty tareas}">
+                            <div class="alert alert-secondary">
+                                <span class="alert-hud">NO QUEST</span>
+                                No hay tareas asignadas para esta semana.
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="tarea" items="${tareas}">
+                                <div class="neon-panel task-card">
                                     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
                                         <h5 class="card-title mb-0"><c:out value="${tarea.titulo}"/></h5>
                                         <span class="badge rounded-pill text-bg-info text-dark">
@@ -166,8 +169,8 @@
                                             <c:out value="${tarea.fechaLimite}"/>
                                         </span>
                                     </div>
-                                    <p class="card-text text-secondary mb-3"><c:out value="${tarea.descripcion}"/></p>
-                                    <div class="task-attachments p-3 rounded">
+                                    <p class="card-text lore-copy mb-3"><c:out value="${tarea.descripcion}"/></p>
+                                    <div class="task-attachments p-0">
                                         <p class="small text-uppercase text-info mb-2 mb-md-3">
                                             <i class="fa-solid fa-paperclip me-1"></i> Archivos adjuntos
                                         </p>
@@ -176,79 +179,93 @@
                                                 <span class="text-muted small">Sin archivos adjuntos</span>
                                             </c:when>
                                             <c:otherwise>
-                                                <div class="d-flex flex-column gap-2">
+                                                <div class="file-grid">
                                                     <c:forEach var="archivo" items="${tarea.archivos}">
                                                         <c:set var="ruta" value="${fn:toLowerCase(archivo.url)}"/>
-                                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                                        <article class="file-card">
                                                             <c:choose>
                                                                 <c:when test="${fn:endsWith(ruta, '.png') or fn:endsWith(ruta, '.jpg') or fn:endsWith(ruta, '.jpeg')}">
-                                                                    <img src="${archivo.url}"
-                                                                         alt="<c:out value='${archivo.nombre}'/>"
-                                                                         width="50" height="50"
-                                                                         class="rounded"
-                                                                         style="object-fit: cover;">
+                                                                    <button type="button" class="file-thumb"
+                                                                            data-lightbox="${archivo.url}"
+                                                                            data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
+                                                                        <img src="${archivo.url}"
+                                                                             alt="<c:out value='${archivo.nombre}'/>">
+                                                                    </button>
                                                                 </c:when>
                                                                 <c:when test="${fn:endsWith(ruta, '.pdf')}">
-                                                                    <i class="fa-solid fa-file-pdf fa-2x text-danger"></i>
+                                                                    <button type="button" class="file-thumb"
+                                                                            data-lightbox="${archivo.url}"
+                                                                            data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
+                                                                        <i class="fa-solid fa-scroll file-thumb-icon is-pdf"></i>
+                                                                    </button>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <i class="fa-solid fa-file-lines fa-2x text-info"></i>
+                                                                    <button type="button" class="file-thumb"
+                                                                            data-lightbox="${archivo.url}"
+                                                                            data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
+                                                                        <i class="fa-solid fa-floppy-disk file-thumb-icon"></i>
+                                                                    </button>
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <span class="small"><c:out value="${archivo.nombre}"/></span>
-                                                            <a href="${archivo.url}"
-                                                               target="_blank"
-                                                               class="btn btn-sm btn-outline-info rounded-pill">
-                                                                <i class="fas fa-eye me-1"></i>Vista previa rápida
-                                                            </a>
-                                                            <a href="${archivo.url}"
-                                                               target="_blank"
-                                                               class="btn btn-sm btn-outline-light rounded-pill">
-                                                                <i class="fas fa-external-link-alt me-1"></i>Abrir
-                                                            </a>
-                                                        </div>
+                                                            <div class="file-card-body">
+                                                                <h3 class="file-card-name"><c:out value="${archivo.nombre}"/></h3>
+                                                                <div class="file-actions">
+                                                                    <button type="button" class="btn-arcade"
+                                                                            data-lightbox="${archivo.url}"
+                                                                            data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
+                                                                        👁️ Visualizar
+                                                                    </button>
+                                                                    <a class="btn-arcade is-download"
+                                                                       href="${archivo.url}"
+                                                                       target="_blank"
+                                                                       rel="noopener noreferrer"
+                                                                       download>
+                                                                        💾 Descargar
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </article>
                                                     </c:forEach>
                                                 </div>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
                                 </div>
-                            </div>
-                        </c:forEach>
-                    </c:otherwise>
-                </c:choose>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
 
-                <p class="section-kicker">Contenido teórico</p>
-                <h2 class="section-title mb-4">Temas de la semana</h2>
-                <div class="row g-4 mb-5">
-                    <div class="col-md-4">
-                        <article class="card-app h-100">
-                            <span class="skill-icon mb-3"><i class="fa-solid fa-bullseye"></i></span>
-                            <h3 class="h5">Objetivos</h3>
-                            <p class="text-muted-app mb-0">
-                                Comprender el alcance de la semana, preparar el entorno de trabajo
-                                y dejar evidencias claras para la revisión académica.
-                            </p>
-                        </article>
+                    <article class="neon-panel lore-wide">
+                        <p class="section-kicker">Bitácora</p>
+                        <h2 class="lore-title">Contenido teórico de la semana</h2>
+                        <p class="lore-copy mb-3"><c:out value="${questWeekLore}"/></p>
+                        <p class="lore-copy mb-0"><c:out value="${semana.contenido}"/></p>
+                    </article>
+
+                    <p class="section-kicker">Contenido teórico</p>
+                    <h2 class="section-title mb-4">Temas de la semana</h2>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <article class="card-app h-100">
+                                <span class="skill-icon mb-3"><i class="fa-solid fa-bullseye"></i></span>
+                                <h3 class="h5">Objetivos</h3>
+                                <p class="text-muted-app lore-copy mb-0">
+                                    Comprender el alcance de la semana, preparar el entorno de trabajo
+                                    y dejar evidencias claras para la revisión académica.
+                                </p>
+                            </article>
+                        </div>
+                        <div class="col-md-6">
+                            <article class="card-app h-100">
+                                <span class="skill-icon mb-3"><i class="fa-solid fa-code"></i></span>
+                                <h3 class="h5">Práctica</h3>
+                                <p class="text-muted-app lore-copy mb-0">
+                                    Implementar o documentar el entregable de la semana, organizar
+                                    capturas y adjuntar los archivos de evidencia.
+                                </p>
+                            </article>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <article class="card-app h-100">
-                            <span class="skill-icon mb-3"><i class="fa-solid fa-book"></i></span>
-                            <h3 class="h5">Teoría</h3>
-                            <p class="text-muted-app mb-0"><c:out value="${semana.contenido}"/></p>
-                        </article>
-                    </div>
-                    <div class="col-md-4">
-                        <article class="card-app h-100">
-                            <span class="skill-icon mb-3"><i class="fa-solid fa-code"></i></span>
-                            <h3 class="h5">Práctica</h3>
-                            <p class="text-muted-app mb-0">
-                                Implementar o documentar el entregable de la semana, organizar
-                                capturas y adjuntar los archivos de evidencia.
-                            </p>
-                        </article>
-                    </div>
-                </div>
             </div>
         </section>
     </main>

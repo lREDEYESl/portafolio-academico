@@ -1,0 +1,810 @@
+/* ============================================================
+   CYBER DECK — Unidades / Semanas / Detalle
+   Capa visual Mobile-First. No altera formularios ni IDs JS.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+:root {
+    --deck-sans: "IBM Plex Sans", "Segoe UI", sans-serif;
+    --deck-pixel: "Press Start 2P", "VT323", monospace;
+    --deck-vt: "VT323", ui-monospace, monospace;
+    --deck-cyan: #2de2e6;
+    --deck-magenta: #ff2ec4;
+    --deck-yellow: #ffd23f;
+    --deck-green: #39ff8f;
+    --deck-panel: rgba(14, 16, 38, 0.72);
+    --deck-panel-2: rgba(21, 21, 47, 0.88);
+    --deck-line: rgba(45, 226, 230, 0.45);
+    --deck-glow: 0 0 10px rgba(45, 226, 230, 0.35), 0 0 28px rgba(255, 46, 196, 0.12);
+    --deck-sidebar: 5.75rem;
+}
+
+.deck-page {
+    --font-sans: var(--deck-vt);
+}
+
+.deck-page .lore-copy,
+.deck-page .lore-copy p,
+.deck-page .unit-text,
+.deck-page .section-subtitle,
+.deck-page .card-text,
+.deck-page .puntos-clave-panel li,
+.deck-page .puntos-clave-panel p {
+    font-family: var(--deck-sans);
+    font-size: 1.02rem;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    color: #d5d8f5;
+    text-shadow: none;
+}
+
+.deck-shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: min(1180px, calc(100% - 1.25rem));
+    margin: 0 auto 2.5rem;
+    padding-bottom: 4.75rem;
+}
+
+.deck-main {
+    min-width: 0;
+}
+
+/* ---------- Menú rápido: tira horizontal mini ---------- */
+.stage-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.32rem;
+    margin: 0.7rem 0 0;
+}
+
+.stage-dot {
+    width: 1.85rem;
+    height: 1.85rem;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    font-family: var(--deck-pixel);
+    font-size: 0.38rem;
+    letter-spacing: 0.04em;
+    text-decoration: none !important;
+    color: #f1f3ff !important;
+    background: rgba(12, 14, 34, 0.92);
+    border: 2px solid var(--deck-cyan);
+    box-shadow: 0 0 7px rgba(45, 226, 230, 0.22);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.stage-dot:hover,
+.stage-dot.is-active {
+    transform: translateY(-2px);
+    color: var(--deck-yellow) !important;
+    border-color: var(--deck-yellow);
+    box-shadow: 0 0 10px rgba(255, 210, 63, 0.7), 0 0 18px rgba(255, 46, 196, 0.35);
+}
+
+.stage-dot-1 { border-color: var(--deck-cyan); }
+.stage-dot-2 { border-color: var(--deck-magenta); }
+.stage-dot-3 { border-color: var(--deck-yellow); }
+.stage-dot-4 { border-color: var(--deck-green); }
+
+.rpg-sidebar-toggle,
+.rpg-sidebar,
+.rpg-sidebar-backdrop,
+.rpg-dock {
+    display: none !important;
+}
+
+/* ---------- Sidebar inventario (compacto y llamativo) ---------- */
+.rpg-sidebar-toggle {
+    position: sticky;
+    top: 4.6rem;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.5rem 0 0.15rem;
+    padding: 0.45rem 0.7rem;
+    font-family: var(--deck-pixel);
+    font-size: 0.42rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f1f3ff;
+    background: rgba(18, 18, 42, 0.92);
+    border: 2px solid var(--deck-cyan);
+    box-shadow: 0 0 12px rgba(45, 226, 230, 0.45);
+    cursor: pointer;
+}
+
+.rpg-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 5.8rem;
+    z-index: 45;
+    transform: translateX(-120%);
+    transition: transform 0.22s ease;
+    background: linear-gradient(180deg, #101028, #070814);
+    border-right: 2px solid var(--deck-cyan);
+    box-shadow: 0 0 22px rgba(45, 226, 230, 0.35);
+    padding: 0.7rem 0.4rem 1rem;
+    overflow-y: auto;
+}
+
+.rpg-sidebar.is-open {
+    transform: translateX(0);
+}
+
+.rpg-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(4, 6, 18, 0.62);
+    backdrop-filter: blur(2px);
+}
+
+.rpg-kicker {
+    font-family: var(--deck-pixel);
+    font-size: 0.32rem;
+    color: var(--deck-cyan);
+    letter-spacing: 0.14em;
+    text-align: center;
+    margin-bottom: 0.45rem;
+}
+
+.rpg-chip-list {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.rpg-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.18rem;
+    min-height: 3.15rem;
+    padding: 0.35rem 0.2rem;
+    text-decoration: none !important;
+    color: #f1f3ff !important;
+    background: rgba(21, 21, 47, 0.85);
+    border: 2px solid rgba(45, 226, 230, 0.35);
+    box-shadow: 0 0 8px rgba(45, 226, 230, 0.12);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.rpg-chip:hover,
+.rpg-chip.is-active {
+    transform: translateY(-2px) scale(1.04);
+    border-color: var(--deck-yellow);
+    box-shadow: 0 0 6px rgba(255, 210, 63, 0.95), 0 0 18px rgba(255, 46, 196, 0.45);
+}
+
+.rpg-chip.is-active {
+    background: rgba(255, 46, 196, 0.16);
+    animation: chip-pulse 1.6s ease-in-out infinite;
+}
+
+.rpg-chip-num {
+    font-family: var(--deck-pixel);
+    font-size: 0.62rem;
+    color: var(--deck-yellow);
+    text-shadow: 0 0 8px rgba(255, 210, 63, 0.7);
+    line-height: 1;
+}
+
+.rpg-chip-tag {
+    font-family: var(--deck-pixel);
+    font-size: 0.32rem;
+    letter-spacing: 0.08em;
+    color: var(--deck-cyan);
+}
+
+.rpg-chip-1 { border-color: var(--deck-cyan); }
+.rpg-chip-2 { border-color: var(--deck-magenta); }
+.rpg-chip-3 { border-color: var(--deck-yellow); }
+.rpg-chip-4 { border-color: var(--deck-green); }
+.rpg-chip-map { border-style: dashed; }
+
+@keyframes chip-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 210, 63, 0.4); }
+    50% { box-shadow: 0 0 16px rgba(45, 226, 230, 0.7); }
+}
+
+/* ---------- Week pills ---------- */
+.week-rail {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.35rem 0.15rem 0.7rem;
+    margin: 0.4rem 0 1.1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.week-pill {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    padding: 0.38rem 0.55rem;
+    font-family: var(--deck-pixel);
+    font-size: 0.36rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: #f1f3ff !important;
+    border: 2px solid rgba(45, 226, 230, 0.4);
+    background: rgba(18, 18, 42, 0.75);
+    white-space: nowrap;
+    transition: color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.week-pill:hover,
+.week-pill.is-active {
+    color: var(--deck-yellow) !important;
+    border-color: var(--deck-yellow);
+    box-shadow: 0 0 12px rgba(255, 210, 63, 0.35);
+}
+
+/* ---------- Paneles lore / neón ---------- */
+.neon-panel {
+    position: relative;
+    background: var(--deck-panel);
+    border: 2px solid var(--deck-line);
+    box-shadow: var(--deck-glow);
+    backdrop-filter: blur(8px);
+    padding: 1.15rem 1.1rem 1.25rem;
+    margin-bottom: 1.15rem;
+}
+
+.neon-panel::before,
+.neon-panel::after {
+    content: "";
+    position: absolute;
+    width: 1.1rem;
+    height: 1.1rem;
+    pointer-events: none;
+}
+
+.neon-panel::before {
+    top: -2px;
+    left: -2px;
+    border-top: 3px solid var(--deck-cyan);
+    border-left: 3px solid var(--deck-cyan);
+}
+
+.neon-panel::after {
+    right: -2px;
+    bottom: -2px;
+    border-right: 3px solid var(--deck-magenta);
+    border-bottom: 3px solid var(--deck-magenta);
+}
+
+.pixel-panel {
+    background:
+        linear-gradient(180deg, var(--deck-panel-2), rgba(10, 10, 22, 0.9));
+    border: 3px solid #2de2e6;
+    box-shadow: 4px 4px 0 #ff2ec4, var(--deck-glow);
+    padding: 1.15rem 1.1rem;
+    margin-bottom: 1.15rem;
+}
+
+.lore-title {
+    font-family: var(--deck-pixel);
+    font-size: clamp(0.62rem, 1.6vw, 0.82rem);
+    color: var(--deck-cyan);
+    margin-bottom: 0.85rem;
+    line-height: 1.45;
+}
+
+/* Videos 16:9 */
+.cyber-video,
+.deck-page .ratio-16x9,
+.deck-page .unit-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 2px solid var(--deck-magenta);
+    box-shadow: 0 0 18px rgba(255, 46, 196, 0.25);
+    background: #050510;
+}
+
+.cyber-video iframe,
+.deck-page .ratio-16x9 iframe,
+.deck-page .unit-video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100% !important;
+    max-width: none;
+    border: 0;
+}
+
+/* Tarjetas de unidad / semana */
+.deck-unit-grid,
+.deck-week-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.deck-page .unit-card,
+.deck-page .week-card {
+    min-height: 100%;
+}
+
+/* ---------- Archivos: CSS Grid ---------- */
+.file-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+}
+
+.file-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: rgba(12, 14, 34, 0.88);
+    border: 2px solid rgba(169, 112, 255, 0.4);
+    box-shadow: 0 0 0 1px rgba(45, 226, 230, 0.15), 0 8px 24px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.file-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--deck-cyan);
+    box-shadow: var(--deck-glow);
+}
+
+.file-thumb {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 11.5rem;
+    background:
+        repeating-linear-gradient(45deg, rgba(45, 226, 230, 0.06) 0 8px, transparent 8px 16px),
+        #0b0d22;
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.file-thumb img {
+    width: 100%;
+    height: 11.5rem;
+    object-fit: cover;
+    display: block;
+}
+
+.file-thumb-icon {
+    font-size: 4.2rem;
+    color: var(--deck-cyan);
+    text-shadow: 0 0 18px rgba(45, 226, 230, 0.55);
+    animation: file-pulse 2.4s ease-in-out infinite;
+}
+
+.file-thumb-icon.is-pdf {
+    color: #ff4d6d;
+    text-shadow: 0 0 18px rgba(255, 77, 109, 0.5);
+}
+
+@keyframes file-pulse {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.05); filter: brightness(1.25); }
+}
+
+.file-card-body {
+    padding: 0.85rem 0.85rem 1rem;
+}
+
+.file-card-name {
+    font-family: var(--deck-sans);
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #f1f3ff;
+    margin-bottom: 0.75rem;
+    word-break: break-word;
+}
+
+.file-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+}
+
+.btn-arcade {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.4rem;
+    font-family: var(--deck-pixel);
+    font-size: 0.4rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: #f1f3ff !important;
+    background: rgba(255, 46, 196, 0.14);
+    border: 2px solid var(--deck-magenta);
+    box-shadow: 0 0 10px rgba(255, 46, 196, 0.28);
+    cursor: pointer;
+}
+
+.btn-arcade.is-download {
+    background: rgba(45, 226, 230, 0.12);
+    border-color: var(--deck-cyan);
+    box-shadow: 0 0 10px rgba(45, 226, 230, 0.28);
+}
+
+.btn-arcade:hover {
+    filter: brightness(1.18);
+    transform: translateY(-1px);
+}
+
+/* Lightbox */
+.cyber-lightbox {
+    width: min(920px, 94vw);
+    max-height: 92vh;
+    padding: 0;
+    border: 2px solid var(--deck-cyan);
+    background: #070814;
+    box-shadow: var(--deck-glow);
+    color: #f1f3ff;
+}
+
+.cyber-lightbox::backdrop {
+    background: rgba(4, 6, 16, 0.82);
+}
+
+.cyber-lightbox img {
+    display: block;
+    width: 100%;
+    max-height: 78vh;
+    object-fit: contain;
+    background: #050510;
+}
+
+.cyber-lightbox-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    font-family: var(--deck-pixel);
+    font-size: 0.42rem;
+}
+
+.cyber-lightbox-close {
+    font-family: var(--deck-pixel);
+    font-size: 0.42rem;
+    color: #f1f3ff;
+    background: transparent;
+    border: 2px solid var(--deck-yellow);
+    padding: 0.4rem 0.65rem;
+    cursor: pointer;
+}
+
+.puntos-clave-panel ul {
+    padding-left: 1.1rem;
+    margin: 0;
+}
+
+.puntos-clave-panel li {
+    margin-bottom: 0.55rem;
+}
+
+.puntos-clave-panel li:last-child {
+    margin-bottom: 0;
+}
+
+.rpg-dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 35;
+    display: flex;
+    gap: 0.35rem;
+    padding: 0.4rem 0.55rem calc(0.4rem + env(safe-area-inset-bottom));
+    background: rgba(10, 10, 22, 0.94);
+    border-top: 2px solid var(--deck-cyan);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.rpg-dock a,
+.rpg-dock button {
+    flex: 1;
+    font-family: var(--deck-pixel);
+    font-size: 0.36rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f1f3ff;
+    text-decoration: none;
+    background: rgba(21, 21, 47, 0.9);
+    border: 2px solid var(--deck-cyan);
+    padding: 0.55rem 0.25rem;
+    text-align: center;
+}
+
+@media (min-width: 640px) {
+    .file-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .deck-unit-grid,
+    .deck-week-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 992px) {
+    .deck-shell {
+        grid-template-columns: 1fr;
+        padding-bottom: 0;
+        width: min(1220px, calc(100% - 2rem));
+        gap: 1.35rem;
+    }
+
+    .file-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* ---------- Compact inventory (no giant sliding cards) ---------- */
+.inventory-board {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.inventory-row {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    gap: 0.85rem;
+    align-items: start;
+    padding: 0.85rem 0.95rem;
+    background: var(--deck-panel);
+    border: 1px solid var(--deck-line);
+    box-shadow: none;
+}
+
+.inventory-row .unit-icon {
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+}
+
+.inventory-row .unit-title {
+    font-size: 0.72rem;
+    margin-bottom: 0.35rem;
+}
+
+.inventory-row .lore-copy,
+.inventory-row .unit-text {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin-bottom: 0.4rem;
+}
+
+.rpg-slot-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--deck-sans);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: #9c9fce;
+    margin-top: 0.2rem;
+}
+
+.rpg-slot-name {
+    display: block;
+    font-family: var(--deck-vt) !important;
+    font-size: 1.15rem !important;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.lore-wide {
+    padding: 1.4rem 1.25rem 1.55rem;
+}
+
+.lore-wide .lore-copy {
+    font-size: 1.08rem;
+    line-height: 1.85;
+    max-width: 70ch;
+}
+
+/* ---------- Arcade terminal (login / registro) ---------- */
+.arcade-boot .crt-terminal {
+    position: relative;
+    background: rgba(6, 8, 20, 0.88);
+    border: 2px solid var(--deck-cyan);
+    box-shadow: 0 0 0 1px rgba(255, 46, 196, 0.25), var(--deck-glow);
+    padding: 1.15rem 1.1rem 1.35rem;
+    overflow: hidden;
+}
+
+.arcade-boot .crt-terminal::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(45, 226, 230, 0.05) 0 1px,
+        transparent 1px 4px
+    );
+    animation: crt-scan 7s linear infinite;
+}
+
+.crt-terminal-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: -1.15rem -1.1rem 1rem;
+    padding: 0.45rem 0.8rem;
+    font-family: var(--deck-pixel);
+    font-size: 0.42rem;
+    letter-spacing: 0.12em;
+    color: #051014;
+    background: linear-gradient(90deg, var(--deck-cyan), var(--deck-magenta));
+}
+
+.crt-title {
+    font-family: var(--deck-vt);
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 10px rgba(45, 226, 230, 0.55);
+}
+
+.arcade-boot .form-control {
+    font-family: var(--deck-vt);
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+}
+
+.btn-insert-coin {
+    animation: coin-pulse 2.2s ease-in-out infinite;
+}
+
+.btn-insert-coin:hover {
+    transform: translateY(-3px) scale(1.03);
+    filter: hue-rotate(18deg) brightness(1.22);
+    box-shadow: 0 0 8px rgba(255, 210, 63, 0.9), 0 0 24px rgba(255, 46, 196, 0.45) !important;
+}
+
+.btn-insert-coin:hover::after {
+    content: " INSERT COIN";
+}
+
+@keyframes coin-pulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(255, 46, 196, 0.35); }
+    50% { box-shadow: 0 0 16px rgba(45, 226, 230, 0.55); }
+}
+
+@keyframes crt-scan {
+    from { background-position: 0 0; }
+    to { background-position: 0 12px; }
+}
+
+/* ---------- Home: stats, logros, hover levitate ---------- */
+.player-stat {
+    margin-bottom: 0.7rem;
+}
+
+.player-stat span {
+    display: block;
+    font-family: var(--deck-pixel);
+    font-size: 0.4rem;
+    color: var(--deck-cyan);
+    margin-bottom: 0.28rem;
+}
+
+.xp-bar {
+    height: 10px;
+    border: 2px solid var(--deck-cyan);
+    background: #070814;
+    overflow: hidden;
+}
+
+.xp-bar i {
+    display: block;
+    height: 100%;
+    background: repeating-linear-gradient(90deg, var(--deck-green) 0 7px, transparent 7px 10px);
+}
+
+.badge-8bit .skill-text,
+.skill-card .skill-text {
+    font-family: var(--deck-sans);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.skill-card,
+.badge-8bit {
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.skill-card:hover,
+.badge-8bit:hover {
+    transform: translateY(-10px);
+    border-color: var(--deck-cyan) !important;
+    box-shadow: 0 12px 0 rgba(45, 226, 230, 0.2), 0 0 24px rgba(45, 226, 230, 0.45) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rpg-sidebar,
+    .file-card,
+    .file-thumb-icon,
+    .rpg-slot,
+    .btn-insert-coin,
+    .arcade-boot .crt-terminal::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ---------- Responsive deck ---------- */
+.deck-shell,
+.deck-main,
+.inventory-board,
+.inventory-row,
+.neon-panel,
+.pixel-panel,
+.file-grid,
+.file-card,
+.week-rail {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.inventory-row {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.lore-copy,
+.unit-text,
+.text-muted-app {
+    overflow-wrap: anywhere;
+}
+
+.table-wrap,
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 576px) {
+    .inventory-row {
+        grid-template-columns: 2.6rem minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .file-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .file-thumb,
+    .file-thumb img {
+        min-height: 9rem;
+        height: 9rem;
+    }
+
+    .rpg-dock {
+        display: none !important;
+    }
+
+    .cyber-lightbox {
+        width: min(100vw - 1rem, 920px);
+    }
+}

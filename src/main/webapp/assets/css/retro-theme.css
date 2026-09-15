@@ -191,10 +191,13 @@ body::after {
 
 img,
 svg,
-video,
-iframe {
+video {
     max-width: 100%;
     height: auto;
+}
+
+iframe {
+    max-width: 100%;
 }
 
 .container,
@@ -248,8 +251,9 @@ h1, h2, h3, h4, h5, h6,
 
 .section-title {
     position: relative;
-    font-size: clamp(0.85rem, 2vw + 0.4rem, 1.25rem);
-    display: inline-block;
+    font-size: clamp(0.78rem, 2vw + 0.35rem, 1.25rem);
+    display: block;
+    max-width: 100%;
     padding-bottom: var(--space-sm);
 }
 
@@ -923,6 +927,20 @@ p {
     overflow: hidden;
 }
 
+.stat-item .stat-value {
+    font-size: clamp(0.72rem, 2vw, 1.05rem);
+    line-height: 1.15;
+}
+
+.stat-item .stat-label {
+    font-family: var(--font-sans) !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+    display: block;
+    margin-top: 0.2rem;
+}
+
 .stat-item::before {
     content: "";
     position: absolute;
@@ -1235,6 +1253,40 @@ a:hover {
 
     .hero::after {
         display: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero .row,
+    .cta-band {
+        text-align: left;
+    }
+
+    .hero-title,
+    .hero-name {
+        font-size: clamp(0.78rem, 6.2vw, 1.15rem);
+    }
+
+    .about-photo-frame {
+        max-width: min(280px, 100%);
+    }
+
+    .week-rail {
+        width: calc(100% + 0.5rem);
+        margin-left: -0.25rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+
+    .btn-primary-app,
+    .btn-outline-app,
+    .btn-insert-coin {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .navbar-app .navbar-brand-app {
+        max-width: calc(100% - 3.5rem);
     }
 }
 
