@@ -12,20 +12,33 @@ import java.util.List;
 
 public class SemanaDAO {
 
+    private static final String SQL_POR_UNIDAD = """
+            SELECT id, unidad_id, titulo, contenido
+            FROM semanas
+            WHERE unidad_id = ?
+            ORDER BY id
+            """;
+
+    private static final String SQL_POR_ID = """
+            SELECT id, unidad_id, titulo, contenido
+            FROM semanas
+            WHERE id = ?
+            """;
+
+    private static final String SQL_TODAS = """
+            SELECT id, unidad_id, titulo, contenido
+            FROM semanas
+            ORDER BY unidad_id, id
+            """;
+
     public List<Semana> listarPorUnidad(int unidadId) throws SQLException {
-        String sql = """
-                SELECT id, unidad_id, titulo, contenido
-                FROM semanas
-                WHERE unidad_id = ?
-                ORDER BY id
-                """;
         List<Semana> semanas = new ArrayList<>();
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_POR_UNIDAD)) {
 
-            statement.setInt(1, unidadId);
-            try (ResultSet resultSet = statement.executeQuery()) {
+            ps.setInt(1, unidadId);
+            try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
                     semanas.add(mapear(resultSet));
                 }
@@ -36,17 +49,11 @@ public class SemanaDAO {
     }
 
     public Semana buscarPorId(int id) throws SQLException {
-        String sql = """
-                SELECT id, unidad_id, titulo, contenido
-                FROM semanas
-                WHERE id = ?
-                """;
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_POR_ID)) {
 
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
+            ps.setInt(1, id);
+            try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
                     return mapear(resultSet);
                 }
@@ -57,16 +64,11 @@ public class SemanaDAO {
     }
 
     public List<Semana> listarTodas() throws SQLException {
-        String sql = """
-                SELECT id, unidad_id, titulo, contenido
-                FROM semanas
-                ORDER BY unidad_id, id
-                """;
         List<Semana> semanas = new ArrayList<>();
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_TODAS);
+             ResultSet resultSet = ps.executeQuery()) {
             while (resultSet.next()) {
                 semanas.add(mapear(resultSet));
             }

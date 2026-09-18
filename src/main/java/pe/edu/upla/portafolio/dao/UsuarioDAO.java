@@ -13,22 +13,59 @@ import java.util.List;
 
 public class UsuarioDAO {
 
+    private static final String SQL_POR_EMAIL = """
+            SELECT id, nombre, email, password_hash, rol, estado
+            FROM usuarios
+            WHERE email = ?
+            """;
+
+    private static final String SQL_EXISTE_EMAIL = "SELECT 1 FROM usuarios WHERE email = ?";
+
+    private static final String SQL_REGISTRAR = """
+            INSERT INTO usuarios (nombre, email, password_hash, rol, estado)
+            VALUES (?, ?, ?, 'USUARIO', 'PENDIENTE')
+            """;
+
+    private static final String SQL_LISTAR = """
+            SELECT id, nombre, email, password_hash, rol, estado
+            FROM usuarios
+            ORDER BY
+                CASE estado
+                    WHEN 'PENDIENTE' THEN 1
+                    WHEN 'APROBADO' THEN 2
+                    ELSE 3
+                END,
+                id
+            """;
+
+    private static final String SQL_CAMBIAR_ESTADO = "UPDATE usuarios SET estado = ? WHERE id = ?";
+
+    private static final String SQL_POR_ID = """
+            SELECT id, nombre, email, password_hash, rol, estado
+            FROM usuarios
+            WHERE id = ?
+            """;
+
+    private static final String SQL_ACTUALIZAR = """
+            UPDATE usuarios
+            SET nombre = ?, email = ?, rol = ?
+            WHERE id = ?
+            """;
+
+    private static final String SQL_PASSWORD = "UPDATE usuarios SET password_hash = ? WHERE id = ?";
+
+    private static final String SQL_ELIMINAR = "DELETE FROM usuarios WHERE id = ?";
+
     public Usuario autenticar(String email, String passwordTextoPlano) {
         if (email == null || email.isBlank() || passwordTextoPlano == null || passwordTextoPlano.isBlank()) {
             return null;
         }
 
-        String sql = """
-                SELECT id, nombre, email, password_hash, rol, estado
-                FROM usuarios
-                WHERE email = ?
-                """;
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_POR_EMAIL)) {
 
-            statement.setString(1, email.trim());
-            try (ResultSet resultSet = statement.executeQuery()) {
+            ps.setString(1, email.trim());
+            try (ResultSet resultSet = ps.executeQuery()) {
                 if (!resultSet.next()) {
                     return null;
                 }
@@ -46,49 +83,42 @@ public class UsuarioDAO {
     }
 
     public boolean existeEmail(String email) throws SQLException {
-        String sql = "SELECT 1 FROM usuarios WHERE email = ?";
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, email.trim());
-            try (ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_EXISTE_EMAIL)) {
+            ps.setString(1, email.trim());
+            try (ResultSet resultSet = ps.executeQuery()) {
                 return resultSet.next();
             }
         }
     }
 
     public void registrar(String nombre, String email, String passwordTextoPlano) throws SQLException {
-        String sql = """
-                INSERT INTO usuarios (nombre, email, password_hash, rol, estado)
-                VALUES (?, ?, ?, 'USUARIO', 'PENDIENTE')
-                """;
+        String nombreSeguro = JdbcSafety.requireTexto(nombre, "nombre");
+        String emailSeguro = JdbcSafety.requireTexto(email, "email");
+        if (passwordTextoPlano == null || passwordTextoPlano.isBlank()) {
+            throw new SQLException("El campo password es obligatorio.");
+        }
         String passwordHash = BCrypt.hashpw(passwordTextoPlano, BCrypt.gensalt());
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, nombre.trim());
-            statement.setString(2, email.trim());
-            statement.setString(3, passwordHash);
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_REGISTRAR)) {
+            ps.setString(1, nombreSeguro);
+            ps.setString(2, emailSeguro);
+            ps.setString(3, passwordHash);
+            ps.executeUpdate();
         }
     }
 
     public List<Usuario> listarTodos() throws SQLException {
-        String sql = """
-                SELECT id, nombre, email, password_hash, rol, estado
-                FROM usuarios
-                ORDER BY
-                    CASE estado
-                        WHEN 'PENDIENTE' THEN 1
-                        WHEN 'APROBADO' THEN 2
-                        ELSE 3
-                    END,
-                    id
-                """;
         List<Usuario> usuarios = new ArrayList<>();
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_LISTAR);
+             ResultSet resultSet = ps.executeQuery()) {
             while (resultSet.next()) {
                 usuarios.add(mapear(resultSet));
             }
@@ -98,30 +128,21 @@ public class UsuarioDAO {
     }
 
     public void cambiarEstado(int id, String nuevoEstado) throws SQLException {
-        if (!"APROBADO".equals(nuevoEstado) && !"RECHAZADO".equals(nuevoEstado) && !"PENDIENTE".equals(nuevoEstado)) {
-            throw new SQLException("Estado no permitido.");
-        }
+        String estadoSeguro = JdbcSafety.requireEstado(nuevoEstado);
 
-        String sql = "UPDATE usuarios SET estado = ? WHERE id = ?";
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, nuevoEstado);
-            statement.setInt(2, id);
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_CAMBIAR_ESTADO)) {
+            ps.setString(1, estadoSeguro);
+            ps.setInt(2, id);
+            ps.executeUpdate();
         }
     }
 
     public Usuario obtenerPorId(int id) throws SQLException {
-        String sql = """
-                SELECT id, nombre, email, password_hash, rol, estado
-                FROM usuarios
-                WHERE id = ?
-                """;
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_POR_ID)) {
+            ps.setInt(1, id);
+            try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
                     return mapear(resultSet);
                 }
@@ -132,40 +153,36 @@ public class UsuarioDAO {
     }
 
     public void actualizar(Usuario usuario) throws SQLException {
-        String sql = """
-                UPDATE usuarios
-                SET nombre = ?, email = ?, rol = ?
-                WHERE id = ?
-                """;
+        if (usuario == null || usuario.getId() == null) {
+            throw new SQLException("Usuario inválido.");
+        }
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, usuario.getNombre().trim());
-            statement.setString(2, usuario.getEmail().trim());
-            statement.setString(3, usuario.getRol());
-            statement.setLong(4, usuario.getId());
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_ACTUALIZAR)) {
+            ps.setString(1, JdbcSafety.requireTexto(usuario.getNombre(), "nombre"));
+            ps.setString(2, JdbcSafety.requireTexto(usuario.getEmail(), "email"));
+            ps.setString(3, JdbcSafety.requireRol(usuario.getRol()));
+            ps.setLong(4, usuario.getId());
+            ps.executeUpdate();
         }
     }
 
     public void actualizarPassword(int id, String passwordHash) throws SQLException {
-        String sql = "UPDATE usuarios SET password_hash = ? WHERE id = ?";
+        String hashSeguro = JdbcSafety.requireTexto(passwordHash, "password_hash");
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, passwordHash);
-            statement.setInt(2, id);
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_PASSWORD)) {
+            ps.setString(1, hashSeguro);
+            ps.setInt(2, id);
+            ps.executeUpdate();
         }
     }
 
     public void eliminar(int id) throws SQLException {
-        String sql = "DELETE FROM usuarios WHERE id = ?";
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_ELIMINAR)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
     }
 

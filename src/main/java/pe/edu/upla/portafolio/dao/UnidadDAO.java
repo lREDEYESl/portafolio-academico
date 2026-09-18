@@ -12,13 +12,15 @@ import java.util.List;
 
 public class UnidadDAO {
 
+    private static final String SQL_TODAS = "SELECT id, titulo, descripcion FROM unidades ORDER BY id";
+    private static final String SQL_POR_ID = "SELECT id, titulo, descripcion FROM unidades WHERE id = ?";
+
     public List<Unidad> listarTodas() throws SQLException {
-        String sql = "SELECT id, titulo, descripcion FROM unidades ORDER BY id";
         List<Unidad> unidades = new ArrayList<>();
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_TODAS);
+             ResultSet resultSet = ps.executeQuery()) {
 
             while (resultSet.next()) {
                 unidades.add(mapear(resultSet));
@@ -29,13 +31,11 @@ public class UnidadDAO {
     }
 
     public Unidad buscarPorId(int id) throws SQLException {
-        String sql = "SELECT id, titulo, descripcion FROM unidades WHERE id = ?";
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_POR_ID)) {
 
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
+            ps.setInt(1, id);
+            try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
                     return mapear(resultSet);
                 }

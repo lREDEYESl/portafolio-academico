@@ -59,10 +59,9 @@ public class ArchivoAdminServlet extends HttpServlet {
 
         try {
             if ("eliminar".equals(action)) {
-                archivoDAO.eliminar(Integer.parseInt(request.getParameter("id")));
+                eliminarConStorage(Integer.parseInt(request.getParameter("id")));
             } else {
-                Archivo archivo = leerYGuardarArchivo(request);
-                archivoDAO.insertar(archivo);
+                guardarArchivo(request);
             }
             response.sendRedirect(ctx + "/admin/archivos");
         } catch (SQLException | IllegalArgumentException | InterruptedException e) {
@@ -73,12 +72,64 @@ public class ArchivoAdminServlet extends HttpServlet {
         }
     }
 
-    private Archivo leerYGuardarArchivo(HttpServletRequest request)
+    private void guardarArchivo(HttpServletRequest request)
+            throws SQLException, IOException, ServletException, InterruptedException {
+        String idArchivo = request.getParameter("idArchivo");
+        if (idArchivo != null && !idArchivo.isBlank()) {
+            actualizarArchivo(request, Integer.parseInt(idArchivo.trim()));
+            return;
+        }
+        Archivo nuevo = leerYSubirArchivo(request, true);
+        archivoDAO.insertar(nuevo);
+    }
+
+    private void actualizarArchivo(HttpServletRequest request, int id)
+            throws SQLException, IOException, ServletException, InterruptedException {
+        Archivo existente = archivoDAO.obtenerPorId(id);
+        if (existente == null) {
+            throw new ServletException("El archivo a editar no existe.");
+        }
+
+        String nombreVisible = request.getParameter("nombre");
+        if (nombreVisible == null || nombreVisible.isBlank()) {
+            nombreVisible = existente.getNombre();
+        }
+
+        existente.setId((long) id);
+        existente.setNombre(nombreVisible.trim());
+        existente.setEntidadTipo("TAREA");
+        existente.setEntidadId(Long.parseLong(request.getParameter("tarea_id")));
+
+        if (tieneArchivoNuevo(request.getPart("archivo"))) {
+            String urlAnterior = existente.getUrl();
+            Archivo subido = leerYSubirArchivo(request, false);
+            existente.setUrl(subido.getUrl());
+            try {
+                storageService.eliminarArchivoFisico(urlAnterior);
+            } catch (IOException e) {
+                throw new ServletException(
+                        "El archivo nuevo se subió, pero no se pudo borrar el anterior en Storage.", e);
+            }
+        }
+
+        archivoDAO.actualizar(existente);
+    }
+
+    private boolean tieneArchivoNuevo(Part filePart) {
+        return filePart != null
+                && filePart.getSize() > 0
+                && filePart.getSubmittedFileName() != null
+                && !filePart.getSubmittedFileName().isBlank();
+    }
+
+    private Archivo leerYSubirArchivo(HttpServletRequest request, boolean obligatorio)
             throws IOException, ServletException, InterruptedException {
         Part filePart = request.getPart("archivo");
-        if (filePart == null || filePart.getSize() == 0 || filePart.getSubmittedFileName() == null
-                || filePart.getSubmittedFileName().isBlank()) {
-            throw new ServletException("Debe seleccionar un archivo.");
+        if (!tieneArchivoNuevo(filePart)) {
+            if (obligatorio) {
+                throw new ServletException("Debe seleccionar un archivo.");
+            }
+            throw new ServletException("No se recibió un archivo nuevo.");
         }
 
         String originalName = new File(filePart.getSubmittedFileName()).getName();
@@ -107,6 +158,20 @@ public class ArchivoAdminServlet extends HttpServlet {
         archivo.setNombre(nombreVisible.trim());
         archivo.setUrl(urlPublica);
         return archivo;
+    }
+
+    private void eliminarConStorage(int id) throws SQLException, ServletException, InterruptedException {
+        Archivo existente = archivoDAO.obtenerPorId(id);
+        if (existente == null) {
+            return;
+        }
+        try {
+            storageService.eliminarArchivoFisico(existente.getUrl());
+        } catch (IOException e) {
+            throw new ServletException(
+                    "No se pudo eliminar el archivo físico en Storage. El registro en PostgreSQL se conservó.", e);
+        }
+        archivoDAO.eliminar(id);
     }
 
     private String extensionDe(String fileName) {

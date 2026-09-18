@@ -48,6 +48,93 @@ public class SupabaseStorageService {
         return supabaseUrl + "/storage/v1/object/public/" + BUCKET + "/" + nombreUnico;
     }
 
+    public void eliminarArchivoFisico(String urlOArchivoPath) throws IOException, InterruptedException {
+        String objectName = extraerNombreObjeto(urlOArchivoPath);
+        if (objectName == null || objectName.isBlank()) {
+            throw new IOException("No se pudo determinar el objeto a eliminar en Storage.");
+        }
+
+        String supabaseUrl = normalizarBase(credencial("SUPABASE_URL", "supabase.url"));
+        String supabaseKey = credencial("SUPABASE_KEY", "supabase.key");
+        if (supabaseUrl == null || supabaseKey == null) {
+            throw new IOException("Credenciales de Supabase no configuradas");
+        }
+
+        String endpoint = supabaseUrl + "/storage/v1/object/" + BUCKET + "/" + encodeObjectPath(objectName);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(endpoint))
+                .timeout(Duration.ofSeconds(30))
+                .header("Authorization", "Bearer " + supabaseKey)
+                .header("apikey", supabaseKey)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+        int status = response.statusCode();
+        if (status == 200 || status == 204 || status == 404) {
+            return;
+        }
+        throw new IOException("Error HTTP " + status + " al eliminar de Supabase: " + response.body());
+    }
+
+    private static String extraerNombreObjeto(String urlOArchivoPath) {
+        if (urlOArchivoPath == null || urlOArchivoPath.isBlank()) {
+            return null;
+        }
+        String valor = recortarQuery(urlOArchivoPath.trim());
+        String publicMarker = "/storage/v1/object/public/" + BUCKET + "/";
+        String privateMarker = "/storage/v1/object/" + BUCKET + "/";
+        int idx = valor.indexOf(publicMarker);
+        if (idx >= 0) {
+            return decodePath(valor.substring(idx + publicMarker.length()));
+        }
+        idx = valor.indexOf(privateMarker);
+        if (idx >= 0) {
+            return decodePath(valor.substring(idx + privateMarker.length()));
+        }
+        String prefix = BUCKET + "/";
+        if (valor.startsWith(prefix)) {
+            return decodePath(valor.substring(prefix.length()));
+        }
+        int slash = valor.lastIndexOf('/');
+        return decodePath(slash >= 0 ? valor.substring(slash + 1) : valor);
+    }
+
+    private static String recortarQuery(String valor) {
+        int query = valor.indexOf('?');
+        if (query >= 0) {
+            valor = valor.substring(0, query);
+        }
+        int hash = valor.indexOf('#');
+        if (hash >= 0) {
+            valor = valor.substring(0, hash);
+        }
+        return valor;
+    }
+
+    private static String decodePath(String path) {
+        if (path == null || path.isBlank()) {
+            return path;
+        }
+        return java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    private static String encodeObjectPath(String objectName) {
+        String[] parts = objectName.split("/");
+        StringBuilder encoded = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].isBlank()) {
+                continue;
+            }
+            if (encoded.length() > 0) {
+                encoded.append('/');
+            }
+            encoded.append(java.net.URLEncoder.encode(parts[i], java.nio.charset.StandardCharsets.UTF_8)
+                    .replace("+", "%20"));
+        }
+        return encoded.toString();
+    }
+
     private static String credencial(String envKey, String propertyKey) throws IOException {
         String valor = System.getenv(envKey);
         if (valor != null && !valor.isBlank()) {

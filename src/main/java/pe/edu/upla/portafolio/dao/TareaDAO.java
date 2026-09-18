@@ -14,20 +14,46 @@ import java.util.List;
 
 public class TareaDAO {
 
+    private static final String SQL_POR_SEMANA = """
+            SELECT id, semana_id, titulo, descripcion, fecha_limite
+            FROM tareas
+            WHERE semana_id = ?
+            ORDER BY fecha_limite, id
+            """;
+
+    private static final String SQL_TODAS = """
+            SELECT id, semana_id, titulo, descripcion, fecha_limite
+            FROM tareas
+            ORDER BY fecha_limite, id
+            """;
+
+    private static final String SQL_POR_ID = """
+            SELECT id, semana_id, titulo, descripcion, fecha_limite
+            FROM tareas
+            WHERE id = ?
+            """;
+
+    private static final String SQL_INSERTAR = """
+            INSERT INTO tareas (semana_id, titulo, descripcion, fecha_limite)
+            VALUES (?, ?, ?, ?)
+            """;
+
+    private static final String SQL_ACTUALIZAR = """
+            UPDATE tareas
+            SET semana_id = ?, titulo = ?, descripcion = ?, fecha_limite = ?
+            WHERE id = ?
+            """;
+
+    private static final String SQL_ELIMINAR = "DELETE FROM tareas WHERE id = ?";
+
     public List<Tarea> listarPorSemana(int semanaId) throws SQLException {
-        String sql = """
-                SELECT id, semana_id, titulo, descripcion, fecha_limite
-                FROM tareas
-                WHERE semana_id = ?
-                ORDER BY fecha_limite, id
-                """;
         List<Tarea> tareas = new ArrayList<>();
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_POR_SEMANA)) {
 
-            statement.setInt(1, semanaId);
-            try (ResultSet resultSet = statement.executeQuery()) {
+            ps.setInt(1, semanaId);
+            try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
                     tareas.add(mapear(resultSet));
                 }
@@ -38,16 +64,11 @@ public class TareaDAO {
     }
 
     public List<Tarea> listarTodas() throws SQLException {
-        String sql = """
-                SELECT id, semana_id, titulo, descripcion, fecha_limite
-                FROM tareas
-                ORDER BY fecha_limite, id
-                """;
         List<Tarea> tareas = new ArrayList<>();
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_TODAS);
+             ResultSet resultSet = ps.executeQuery()) {
             while (resultSet.next()) {
                 tareas.add(mapear(resultSet));
             }
@@ -57,16 +78,10 @@ public class TareaDAO {
     }
 
     public Tarea obtenerPorId(int id) throws SQLException {
-        String sql = """
-                SELECT id, semana_id, titulo, descripcion, fecha_limite
-                FROM tareas
-                WHERE id = ?
-                """;
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_POR_ID)) {
+            ps.setInt(1, id);
+            try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
                     return mapear(resultSet);
                 }
@@ -77,48 +92,46 @@ public class TareaDAO {
     }
 
     public void insertar(Tarea tarea) throws SQLException {
-        String sql = """
-                INSERT INTO tareas (semana_id, titulo, descripcion, fecha_limite)
-                VALUES (?, ?, ?, ?)
-                """;
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            bindTarea(statement, tarea);
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_INSERTAR)) {
+            bindTarea(ps, tarea);
+            ps.executeUpdate();
         }
     }
 
     public void actualizar(Tarea tarea) throws SQLException {
-        String sql = """
-                UPDATE tareas
-                SET semana_id = ?, titulo = ?, descripcion = ?, fecha_limite = ?
-                WHERE id = ?
-                """;
+        if (tarea == null || tarea.getId() == null) {
+            throw new SQLException("Tarea inválida.");
+        }
 
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            bindTarea(statement, tarea);
-            statement.setLong(5, tarea.getId());
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_ACTUALIZAR)) {
+            bindTarea(ps, tarea);
+            ps.setLong(5, tarea.getId());
+            ps.executeUpdate();
         }
     }
 
     public void eliminar(int id) throws SQLException {
-        String sql = "DELETE FROM tareas WHERE id = ?";
-
         try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            statement.executeUpdate();
+             PreparedStatement ps = JdbcSafety.prepare(connection, SQL_ELIMINAR)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
     }
 
-    private void bindTarea(PreparedStatement statement, Tarea tarea) throws SQLException {
-        statement.setLong(1, tarea.getSemanaId());
-        statement.setString(2, tarea.getTitulo());
-        statement.setString(3, tarea.getDescripcion());
-        statement.setDate(4, Date.valueOf(tarea.getFechaLimite()));
+    private void bindTarea(PreparedStatement ps, Tarea tarea) throws SQLException {
+        if (tarea == null || tarea.getSemanaId() == null) {
+            throw new SQLException("Tarea inválida.");
+        }
+        if (tarea.getFechaLimite() == null) {
+            throw new SQLException("El campo fecha_limite es obligatorio.");
+        }
+
+        ps.setLong(1, tarea.getSemanaId());
+        ps.setString(2, JdbcSafety.requireTexto(tarea.getTitulo(), "titulo"));
+        ps.setString(3, tarea.getDescripcion() == null ? null : tarea.getDescripcion().trim());
+        ps.setDate(4, Date.valueOf(tarea.getFechaLimite()));
     }
 
     private Tarea mapear(ResultSet resultSet) throws SQLException {
