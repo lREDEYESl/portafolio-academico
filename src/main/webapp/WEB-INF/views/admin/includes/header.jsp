@@ -2,13 +2,13 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="uri" value="${pageContext.request.requestURI}"/>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary sticky-top admin-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-app sticky-top admin-navbar cyber-nav">
     <div class="container">
         <a class="navbar-brand navbar-brand-app" href="${pageContext.request.contextPath}/admin/dashboard">
             <span class="brand-mark"><i class="fa-solid fa-gamepad" aria-hidden="true"></i></span>
             <span class="brand-text">
-                HQ ADMIN
-                <small>ARCADE PORTFOLIO</small>
+                <span class="brand-title">HQ ADMIN</span>
+                <small class="brand-subtitle">ARCADE PORTFOLIO</small>
             </span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar"
@@ -16,7 +16,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="adminNavbar">
-            <ul class="navbar-nav mx-lg-4 gap-lg-1">
+            <ul class="navbar-nav navbar-menu mx-lg-4 gap-lg-1">
                 <li class="nav-item">
                     <a class="nav-link nav-link-app ${fn:contains(uri, '/admin/dashboard') ? 'active' : ''}"
                        href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a>

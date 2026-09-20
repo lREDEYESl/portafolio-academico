@@ -10,6 +10,7 @@
 <html lang="es">
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/units-cyber.css?v=20260919u">
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>
@@ -28,7 +29,7 @@
 
         <section class="section pt-0">
             <div class="container">
-                <div class="row g-4">
+                <div class="units-cyber-grid">
                     <c:forEach var="unidad" items="${unidades}">
                     <c:choose>
                         <c:when test="${unidad.id == 1}">
@@ -52,18 +53,19 @@
                             <c:set var="unitWeeks" value="3 semanas"/>
                         </c:otherwise>
                     </c:choose>
-                    <div class="col-12 col-md-6">
-                        <article class="card-app unit-card h-100 ${unitTone}">
-                            <span class="unit-icon"><i class="fa-solid ${unitIcon}"></i></span>
-                            <span class="unit-index">Unidad 0${unidad.id}</span>
-                            <h2 class="unit-title"><c:out value="${unidad.titulo}"/></h2>
-                            <p class="unit-text"><c:out value="${unidad.descripcion}"/></p>
-                            <p class="unit-meta"><i class="fa-regular fa-calendar me-1"></i> ${unitWeeks}</p>
-                            <a class="btn btn-primary-app mt-auto" href="${pageContext.request.contextPath}/unidad/detalle?id=${unidad.id}">
-                                Ver detalle <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </article>
-                    </div>
+                    <article class="cyber-unit-card ${unitTone}">
+                        <span class="cyber-unit-frame" aria-hidden="true"></span>
+                        <header class="cyber-unit-head">
+                            <span class="cyber-unit-icon"><i class="fa-solid ${unitIcon}"></i></span>
+                            <span class="cyber-unit-index">Unidad 0${unidad.id}</span>
+                        </header>
+                        <h2 class="cyber-unit-title"><c:out value="${unidad.titulo}"/></h2>
+                        <p class="cyber-unit-text"><c:out value="${unidad.descripcion}"/></p>
+                        <p class="cyber-unit-meta"><i class="fa-regular fa-calendar"></i> ${unitWeeks}</p>
+                        <a class="cyber-unit-btn" href="${pageContext.request.contextPath}/unidad/detalle?id=${unidad.id}">
+                            VER DETALLE <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </article>
                     </c:forEach>
                 </div>
             </div>

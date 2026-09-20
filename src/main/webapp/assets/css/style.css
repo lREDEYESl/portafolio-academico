@@ -1,23 +1,25 @@
 :root {
-    --color-bg: #0b1220;
-    --color-bg-elevated: #111a2e;
-    --color-surface: #172136;
-    --color-surface-hover: #1e2b45;
-    --color-primary: #3b82f6;
-    --color-primary-dark: #1d4ed8;
-    --color-primary-soft: rgba(59, 130, 246, 0.14);
-    --color-accent: #60a5fa;
-    --color-text: #e8eef7;
-    --color-text-muted: #94a3b8;
-    --color-border: rgba(148, 163, 184, 0.16);
-    --color-success: #34d399;
-    --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-    --font-display: "Fraunces", "Times New Roman", serif;
-    --radius-sm: 0.5rem;
-    --radius-md: 0.85rem;
-    --radius-lg: 1.25rem;
-    --shadow-sm: 0 8px 24px rgba(2, 8, 23, 0.28);
-    --shadow-md: 0 18px 50px rgba(2, 8, 23, 0.45);
+    --color-bg: #0b0f19;
+    --color-bg-elevated: #101624;
+    --color-surface: rgba(15, 20, 30, 0.7);
+    --color-surface-hover: #1a2236;
+    --color-primary: #ff003c;
+    --color-primary-dark: #a3152e;
+    --color-primary-soft: rgba(255, 0, 60, 0.14);
+    --color-accent: #00f3ff;
+    --color-text: #f1f3ff;
+    --color-text-muted: #9aa3b8;
+    --color-border: rgba(0, 243, 255, 0.3);
+    --color-success: #00ff66;
+    --font-sans: "Rajdhani", "Inter", "IBM Plex Sans", system-ui, sans-serif;
+    --font-reading: "Rajdhani", "Inter", "IBM Plex Sans", system-ui, sans-serif;
+    --font-retro: "VT323", "Press Start 2P", ui-monospace, monospace;
+    --font-display: "Press Start 2P", "VT323", monospace;
+    --radius-sm: 0;
+    --radius-md: 0;
+    --radius-lg: 0;
+    --shadow-sm: 0 8px 24px rgba(0, 243, 255, 0.08);
+    --shadow-md: 0 18px 50px rgba(0, 0, 0, 0.45);
     --header-height: 4.5rem;
     --transition: 0.25s ease;
 }
@@ -30,16 +32,22 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
     margin: 0;
     min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    background-color: #0b0f19;
     background:
-        radial-gradient(1200px 500px at 10% -10%, rgba(59, 130, 246, 0.16), transparent 55%),
-        radial-gradient(900px 400px at 100% 0%, rgba(96, 165, 250, 0.08), transparent 45%),
+        radial-gradient(1200px 500px at 10% -10%, rgba(0, 243, 255, 0.12), transparent 55%),
+        radial-gradient(900px 400px at 100% 0%, rgba(255, 0, 60, 0.08), transparent 45%),
         var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-sans);
@@ -49,6 +57,18 @@ body {
 
 main {
     flex: 1;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+img,
+svg,
+video,
+iframe,
+canvas {
+    max-width: 100%;
+    height: auto;
 }
 
 a {
@@ -275,8 +295,9 @@ h1, h2, h3, h4, h5, h6 {
 .hero-glow {
     position: absolute;
     inset: auto auto 10% 55%;
-    width: 420px;
-    height: 420px;
+    width: min(420px, 100%);
+    height: min(420px, 70vw);
+    max-width: 100%;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(59, 130, 246, 0.28), transparent 68%);
     pointer-events: none;

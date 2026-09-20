@@ -5,36 +5,48 @@
 <html lang="es">
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/cyber-glass.css?v=20260919u">
 </head>
-<body>
+<body class="week-detail-body">
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>
 
-    <main>
+    <main class="week-detail-stage">
         <section class="page-header">
             <div class="container">
                 <jsp:include page="/WEB-INF/views/includes/breadcrumb.jsp"/>
-                <span class="hero-badge mb-3">
-                    <i class="fa-solid fa-calendar-week"></i>
-                    Unidad 0<c:out value="${unidad.id}"/> · <c:out value="${semana.titulo}"/>
-                </span>
+                <div class="week-head-row">
+                    <a class="week-back-cmd" href="${pageContext.request.contextPath}/unidad/detalle?id=${unidad.id}">
+                        &lt; Volver a la Unidad
+                    </a>
+                    <span class="cyber-badge">
+                        <i class="fa-solid fa-calendar-week"></i>
+                        <c:out value="${semana.titulo}"/>
+                    </span>
+                </div>
                 <%@ include file="/WEB-INF/views/includes/unit-quest.jsp" %>
                 <%@ include file="/WEB-INF/views/includes/week-quest.jsp" %>
-                <h1 class="section-title"><c:out value="${questWeekTitle}"/></h1>
-                <p class="section-subtitle mb-0">
+                <h1 class="week-detail-title">
+                    <c:out value="${semana.titulo}"/>: <c:out value="${questWeekTitle}"/>
+                </h1>
+                <p class="cyber-copy">
                     Contenido teórico, tareas y archivos de esta semana en
                     <strong><c:out value="${unidad.titulo}"/></strong>.
                 </p>
-                <p class="section-subtitle lore-copy">
+                <p class="cyber-copy">
                     <c:out value="${questWeekLore}"/>
                 </p>
-                <jsp:include page="/WEB-INF/views/includes/week-rail.jsp"/>
+                <div class="unit-detail-tabs">
+                    <jsp:include page="/WEB-INF/views/includes/week-rail.jsp"/>
+                </div>
             </div>
         </section>
 
         <section class="section pt-0">
             <div class="container">
-                    <div class="neon-panel puntos-clave-panel">
-                        <h2 class="lore-title">
+                    <article class="cyber-glass puntos-clave-panel">
+                        <span class="cyber-frame" aria-hidden="true"></span>
+                        <p class="cyber-kicker">Teoría</p>
+                        <h2 class="cyber-heading h4 mb-3">
                             <i class="fa-solid fa-lightbulb me-2"></i>Puntos Clave de la Semana
                         </h2>
                         <c:choose>
@@ -149,43 +161,45 @@
                                 </ul>
                             </c:otherwise>
                         </c:choose>
-                    </div>
+                    </article>
 
-                    <h4 class="lore-title mt-4 mb-3"><i class="fas fa-tasks me-2"></i>Entregables y Tareas</h4>
+                    <h4 class="cyber-heading mt-4 mb-3"><i class="fas fa-tasks me-2"></i>Entregables y Tareas</h4>
                     <c:choose>
                         <c:when test="${empty tareas}">
-                            <div class="alert alert-secondary">
-                                <span class="alert-hud">NO QUEST</span>
+                            <div class="week-empty">
                                 No hay tareas asignadas para esta semana.
                             </div>
                         </c:when>
                         <c:otherwise>
+                            <div class="week-task-grid">
                             <c:forEach var="tarea" items="${tareas}">
-                                <div class="neon-panel task-card">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="card-title mb-0"><c:out value="${tarea.titulo}"/></h5>
-                                        <span class="badge rounded-pill text-bg-info text-dark">
+                                <article class="cyber-glass week-task-card cyber-lift">
+                                    <span class="cyber-frame" aria-hidden="true"></span>
+                                    <div class="week-task-head">
+                                        <h5 class="cyber-heading h5 mb-0"><c:out value="${tarea.titulo}"/></h5>
+                                        <span class="week-date">
                                             <i class="fa-regular fa-calendar me-1"></i>
                                             <c:out value="${tarea.fechaLimite}"/>
                                         </span>
                                     </div>
-                                    <p class="card-text lore-copy mb-3"><c:out value="${tarea.descripcion}"/></p>
-                                    <div class="task-attachments p-0">
-                                        <p class="small text-uppercase text-info mb-2 mb-md-3">
-                                            <i class="fa-solid fa-paperclip me-1"></i> Archivos adjuntos
-                                        </p>
-                                        <c:choose>
-                                            <c:when test="${empty tarea.archivos}">
-                                                <span class="text-muted small">Sin archivos adjuntos</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <div class="file-grid">
-                                                    <c:forEach var="archivo" items="${tarea.archivos}">
-                                                        <c:set var="ruta" value="${fn:toLowerCase(archivo.url)}"/>
-                                                        <article class="file-card">
+                                    <p class="cyber-copy"><c:out value="${tarea.descripcion}"/></p>
+                                    <p class="cyber-kicker">
+                                        <i class="fa-solid fa-paperclip me-1"></i> Archivos adjuntos
+                                    </p>
+                                    <c:choose>
+                                        <c:when test="${empty tarea.archivos}">
+                                            <span class="cyber-copy mb-0">Sin archivos adjuntos</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="week-evidence-grid">
+                                                <c:forEach var="archivo" items="${tarea.archivos}">
+                                                    <c:set var="ruta" value="${fn:toLowerCase(archivo.url)}"/>
+                                                    <article class="archivo-card cyber-glass">
+                                                        <span class="cyber-frame" aria-hidden="true"></span>
+                                                        <div class="archivo-thumb">
                                                             <c:choose>
                                                                 <c:when test="${fn:endsWith(ruta, '.png') or fn:endsWith(ruta, '.jpg') or fn:endsWith(ruta, '.jpeg')}">
-                                                                    <button type="button" class="file-thumb"
+                                                                    <button type="button" class="week-file-icon"
                                                                             data-lightbox="${archivo.url}"
                                                                             data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
                                                                         <img src="${archivo.url}"
@@ -193,78 +207,76 @@
                                                                     </button>
                                                                 </c:when>
                                                                 <c:when test="${fn:endsWith(ruta, '.pdf')}">
-                                                                    <button type="button" class="file-thumb"
+                                                                    <button type="button" class="week-file-icon"
                                                                             data-lightbox="${archivo.url}"
                                                                             data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
-                                                                        <i class="fa-solid fa-scroll file-thumb-icon is-pdf"></i>
+                                                                        <i class="fa-solid fa-scroll"></i>
                                                                     </button>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <button type="button" class="file-thumb"
+                                                                    <button type="button" class="week-file-icon"
                                                                             data-lightbox="${archivo.url}"
                                                                             data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
-                                                                        <i class="fa-solid fa-floppy-disk file-thumb-icon"></i>
+                                                                        <i class="fa-solid fa-terminal"></i>
                                                                     </button>
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <div class="file-card-body">
-                                                                <h3 class="file-card-name"><c:out value="${archivo.nombre}"/></h3>
-                                                                <div class="file-actions">
-                                                                    <button type="button" class="btn-arcade"
-                                                                            data-lightbox="${archivo.url}"
-                                                                            data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
-                                                                        👁️ Visualizar
-                                                                    </button>
-                                                                    <a class="btn-arcade is-download"
-                                                                       href="${archivo.url}"
-                                                                       target="_blank"
-                                                                       rel="noopener noreferrer"
-                                                                       download>
-                                                                        💾 Descargar
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </article>
-                                                    </c:forEach>
-                                                </div>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                </div>
+                                                        </div>
+                                                        <h3 class="week-file-name"><c:out value="${archivo.nombre}"/></h3>
+                                                        <div class="card-actions">
+                                                            <button type="button" class="cyber-btn"
+                                                                    data-lightbox="${archivo.url}"
+                                                                    data-lightbox-alt="<c:out value='${archivo.nombre}'/>">
+                                                                <i class="fa-solid fa-eye"></i> VER
+                                                            </button>
+                                                            <a class="cyber-btn is-ghost"
+                                                               href="${archivo.url}"
+                                                               target="_blank"
+                                                               rel="noopener noreferrer"
+                                                               download>
+                                                                <i class="fa-solid fa-download"></i> DESCARGAR
+                                                            </a>
+                                                        </div>
+                                                    </article>
+                                                </c:forEach>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </article>
                             </c:forEach>
+                            </div>
                         </c:otherwise>
                     </c:choose>
 
-                    <article class="neon-panel lore-wide">
-                        <p class="section-kicker">Bitácora</p>
-                        <h2 class="lore-title">Contenido teórico de la semana</h2>
-                        <p class="lore-copy mb-3"><c:out value="${questWeekLore}"/></p>
-                        <p class="lore-copy mb-0"><c:out value="${semana.contenido}"/></p>
+                    <article class="cyber-glass mt-4">
+                        <span class="cyber-frame" aria-hidden="true"></span>
+                        <p class="cyber-kicker">Bitácora</p>
+                        <h2 class="cyber-heading h4">Contenido teórico de la semana</h2>
+                        <p class="cyber-copy"><c:out value="${questWeekLore}"/></p>
+                        <p class="cyber-copy mb-0"><c:out value="${semana.contenido}"/></p>
                     </article>
 
-                    <p class="section-kicker">Contenido teórico</p>
-                    <h2 class="section-title mb-4">Temas de la semana</h2>
-                    <div class="row g-4 mb-5">
-                        <div class="col-md-6">
-                            <article class="card-app h-100">
-                                <span class="skill-icon mb-3"><i class="fa-solid fa-bullseye"></i></span>
-                                <h3 class="h5">Objetivos</h3>
-                                <p class="text-muted-app lore-copy mb-0">
-                                    Comprender el alcance de la semana, preparar el entorno de trabajo
-                                    y dejar evidencias claras para la revisión académica.
-                                </p>
-                            </article>
-                        </div>
-                        <div class="col-md-6">
-                            <article class="card-app h-100">
-                                <span class="skill-icon mb-3"><i class="fa-solid fa-code"></i></span>
-                                <h3 class="h5">Práctica</h3>
-                                <p class="text-muted-app lore-copy mb-0">
-                                    Implementar o documentar el entregable de la semana, organizar
-                                    capturas y adjuntar los archivos de evidencia.
-                                </p>
-                            </article>
-                        </div>
+                    <p class="cyber-kicker mt-4">Contenido teórico</p>
+                    <h2 class="cyber-heading mb-4">Temas de la semana</h2>
+                    <div class="week-info-grid mb-5">
+                        <article class="cyber-glass">
+                            <span class="cyber-frame" aria-hidden="true"></span>
+                            <span class="cyber-icon"><i class="fa-solid fa-bullseye"></i></span>
+                            <h3 class="cyber-heading h5">Objetivos</h3>
+                            <p class="cyber-copy mb-0">
+                                Comprender el alcance de la semana, preparar el entorno de trabajo
+                                y dejar evidencias claras para la revisión académica.
+                            </p>
+                        </article>
+                        <article class="cyber-glass">
+                            <span class="cyber-frame" aria-hidden="true"></span>
+                            <span class="cyber-icon"><i class="fa-solid fa-code"></i></span>
+                            <h3 class="cyber-heading h5">Práctica</h3>
+                            <p class="cyber-copy mb-0">
+                                Implementar o documentar el entregable de la semana, organizar
+                                capturas y adjuntar los archivos de evidencia.
+                            </p>
+                        </article>
                     </div>
             </div>
         </section>

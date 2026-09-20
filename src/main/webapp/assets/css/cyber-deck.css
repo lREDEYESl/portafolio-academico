@@ -9,19 +9,19 @@
     --deck-sans: "IBM Plex Sans", "Segoe UI", sans-serif;
     --deck-pixel: "Press Start 2P", "VT323", monospace;
     --deck-vt: "VT323", ui-monospace, monospace;
-    --deck-cyan: #2de2e6;
-    --deck-magenta: #ff2ec4;
+    --deck-cyan: #00f3ff;
+    --deck-magenta: #ff003c;
     --deck-yellow: #ffd23f;
-    --deck-green: #39ff8f;
-    --deck-panel: rgba(14, 16, 38, 0.72);
+    --deck-green: #00ff66;
+    --deck-panel: rgba(15, 20, 30, 0.7);
     --deck-panel-2: rgba(21, 21, 47, 0.88);
-    --deck-line: rgba(45, 226, 230, 0.45);
-    --deck-glow: 0 0 10px rgba(45, 226, 230, 0.35), 0 0 28px rgba(255, 46, 196, 0.12);
+    --deck-line: rgba(0, 243, 255, 0.45);
+    --deck-glow: 0 0 10px rgba(0, 243, 255, 0.35), 0 0 28px rgba(255, 0, 60, 0.12);
     --deck-sidebar: 5.75rem;
 }
 
 .deck-page {
-    --font-sans: var(--deck-vt);
+    --font-sans: var(--deck-sans);
 }
 
 .deck-page .lore-copy,

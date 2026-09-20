@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <c:set var="uri" value="${pageContext.request.requestURI}"/>
-<nav class="navbar navbar-expand-md navbar-dark navbar-app sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-app sticky-top cyber-nav">
     <div class="container">
         <a class="navbar-brand navbar-brand-app" href="${pageContext.request.contextPath}/">
             <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-gamepad"></i></span>
@@ -36,6 +36,11 @@
                         <i class="fa-solid fa-book me-1"></i> Unidades
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-app" href="${pageContext.request.contextPath}/#contacto">
+                        <i class="fa-solid fa-envelope me-1"></i> CONTACTO
+                    </a>
+                </li>
                 <c:choose>
                     <c:when test="${not empty usuario}">
                         <li class="nav-item ms-lg-2">
@@ -51,7 +56,7 @@
                     </c:when>
                     <c:otherwise>
                         <li class="nav-item ms-lg-2">
-                            <a class="btn btn-primary-app" href="${pageContext.request.contextPath}/login">
+                            <a class="btn btn-primary-app btn-login" href="${pageContext.request.contextPath}/login">
                                 <i class="fa-solid fa-right-to-bracket"></i> Login
                             </a>
                         </li>
