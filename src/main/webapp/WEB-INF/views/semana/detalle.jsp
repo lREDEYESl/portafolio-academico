@@ -5,7 +5,7 @@
 <html lang="es">
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/cyber-glass.css?v=20260919u">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/cyber-glass.css?v=20260919w">
 </head>
 <body class="week-detail-body">
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>

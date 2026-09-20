@@ -10,7 +10,7 @@
 <html lang="es">
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/units-cyber.css?v=20260919u">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/units-cyber.css?v=20260919w">
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>

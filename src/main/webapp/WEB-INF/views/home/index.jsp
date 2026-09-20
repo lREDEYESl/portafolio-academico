@@ -7,7 +7,7 @@
 <html lang="es">
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
-    <link rel="stylesheet" href="<%= ctx %>/assets/css/cyber-glass.css?v=20260919u">
+    <link rel="stylesheet" href="<%= ctx %>/assets/css/cyber-glass.css?v=20260919w">
 </head>
 <body class="cyber-home-body">
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>
@@ -16,8 +16,8 @@
         <section class="hero">
             <div class="hero-glow"></div>
             <div class="container">
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-7">
+                <div class="hero-layout">
+                    <div class="hero-copy">
                         <span class="cyber-badge">
                             <i class="fa-solid fa-gamepad" aria-hidden="true"></i>
                             STAGE 1 · PORTAFOLIO 2026
@@ -40,7 +40,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-5">
+                    <div class="hero-stats">
                         <div class="cyber-glass">
                             <span class="cyber-frame" aria-hidden="true"></span>
                             <p class="cyber-kicker">Stats del jugador</p>

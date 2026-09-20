@@ -403,17 +403,24 @@
     text-shadow: 0 0 8px var(--cg-cyan);
 }
 
-.week-info-grid,
-.week-task-grid,
-.week-evidence-grid {
+.week-info-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
 }
 
-.week-task-grid,
+.week-task-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    width: 100%;
+}
+
 .week-evidence-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: 1.25rem;
+    width: 100%;
 }
 
 .week-detail-stage .cyber-copy strong,
@@ -426,7 +433,9 @@
 .week-task-card {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
 }
 
 .week-task-head {

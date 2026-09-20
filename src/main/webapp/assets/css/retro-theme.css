@@ -377,7 +377,7 @@ p {
     display: flex;
     align-items: center;
     min-height: unset;
-    padding: 10px 20px;
+    padding: 10px 0;
 }
 
 .navbar-app .container {
@@ -387,6 +387,11 @@ p {
     flex-wrap: wrap;
     gap: var(--space-md);
     width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 .navbar-app .navbar-collapse {
@@ -1404,6 +1409,7 @@ a:hover {
 }
 
 @media (max-width: 575.98px) {
+    .hero-layout,
     .hero .row,
     .cta-band {
         text-align: left;
@@ -2108,7 +2114,6 @@ body {
 }
 
 main,
-.container,
 .navbar-app,
 .footer-app,
 .cyber-home,
@@ -2117,6 +2122,36 @@ main,
     width: 100%;
     max-width: 100%;
     min-width: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.hero-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: center;
+    min-width: 0;
+}
+
+.hero-copy,
+.hero-stats {
+    min-width: 0;
+    max-width: 100%;
+}
+
+@media (min-width: 1400px) {
+    .container,
+    .navbar-app .container {
+        max-width: 1300px;
+    }
 }
 
 img,
@@ -2167,13 +2202,45 @@ h1, h2, h3, h4,
 .cyber-unit-grid,
 .cyber-project-grid,
 .units-cyber-grid,
-.week-task-grid,
-.week-evidence-grid,
 .unit-detail-weeks {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 }
 
+.week-task-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    width: 100%;
+}
+
+.week-task-card {
+    width: 100%;
+    max-width: 100%;
+}
+
+.week-evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: 1.25rem;
+    width: 100%;
+}
+
+@media (max-width: 991.98px) {
+    .hero-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.75rem;
+    }
+}
+
 @media (max-width: 768px) {
+    .container,
+    .navbar-app .container,
+    .footer-app .container,
+    .hero .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
     .contacto-grid {
         display: grid;
         grid-template-columns: 1fr;
