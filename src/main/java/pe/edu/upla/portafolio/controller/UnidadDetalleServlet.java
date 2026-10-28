@@ -37,9 +37,12 @@ public class UnidadDetalleServlet extends HttpServlet {
             }
 
             List<Semana> semanas = semanaService.listarPorUnidad(unidadId);
+            Unidad[] unidadesVecinas = unidadService.unidadesVecinas(unidad.getId());
             String ctx = request.getContextPath();
 
             request.setAttribute("unidad", unidad);
+            request.setAttribute("unidadAnterior", unidadesVecinas[0]);
+            request.setAttribute("unidadSiguiente", unidadesVecinas[1]);
             request.setAttribute("semanas", semanas);
             request.setAttribute("pageTitle", unidad.getTitulo() + " | Portafolio Académico");
             request.setAttribute("breadcrumbLabels", new String[]{"Inicio", "Unidades", unidad.getTitulo()});

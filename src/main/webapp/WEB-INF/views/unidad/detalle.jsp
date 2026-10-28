@@ -4,7 +4,7 @@
 <html lang="es">
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/unit-detail-cyber.css?v=20260919w">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/unit-detail-cyber.css?v=20261028">
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>
@@ -73,6 +73,10 @@
                         </p>
                     </article>
                 </div>
+
+                <c:set var="stepBtnClass" value="unit-detail-btn"/>
+                <c:set var="stepGhostClass" value="is-ghost"/>
+                <%@ include file="/WEB-INF/views/includes/unit-step-nav.jsp" %>
 
                 <div class="unit-detail-weeks-head">
                     <div>

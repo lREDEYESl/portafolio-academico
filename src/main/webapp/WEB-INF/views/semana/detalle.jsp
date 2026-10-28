@@ -5,7 +5,7 @@
 <html lang="es">
 <head>
     <jsp:include page="/WEB-INF/views/includes/head.jsp"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/cyber-glass.css?v=20260919w">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/cyber-glass.css?v=20261028">
 </head>
 <body class="week-detail-body">
     <jsp:include page="/WEB-INF/views/includes/navbar.jsp"/>
@@ -162,6 +162,43 @@
                             </c:otherwise>
                         </c:choose>
                     </article>
+
+                    <c:set var="stepBtnClass" value="cyber-btn"/>
+                    <c:set var="stepGhostClass" value="is-ghost"/>
+                    <%@ include file="/WEB-INF/views/includes/unit-step-nav.jsp" %>
+
+                    <nav class="week-step-nav is-weeks" aria-label="Semana anterior y siguiente">
+                        <c:choose>
+                            <c:when test="${not empty semanaAnterior}">
+                                <a class="cyber-btn is-ghost week-step-btn"
+                                   href="${pageContext.request.contextPath}/semana/detalle?id=${semanaAnterior.id}">
+                                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                                    Semana anterior
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="cyber-btn is-ghost week-step-btn is-disabled" aria-disabled="true">
+                                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                                    Semana anterior
+                                </span>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:choose>
+                            <c:when test="${not empty semanaSiguiente}">
+                                <a class="cyber-btn week-step-btn"
+                                   href="${pageContext.request.contextPath}/semana/detalle?id=${semanaSiguiente.id}">
+                                    Semana siguiente
+                                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="cyber-btn week-step-btn is-disabled" aria-disabled="true">
+                                    Semana siguiente
+                                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                                </span>
+                            </c:otherwise>
+                        </c:choose>
+                    </nav>
 
                     <h4 class="cyber-heading mt-4 mb-3"><i class="fas fa-tasks me-2"></i>Entregables y Tareas</h4>
                     <c:choose>

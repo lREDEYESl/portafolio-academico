@@ -42,6 +42,21 @@ public class SemanaDetalleServlet extends HttpServlet {
             }
 
             Unidad unidad = unidadService.buscarPorId(semana.getUnidadId().intValue());
+            Unidad[] unidadesVecinas = unidadService.unidadesVecinas(semana.getUnidadId());
+            List<Semana> semanas = semanaService.listarPorUnidad(semana.getUnidadId().intValue());
+            Semana semanaAnterior = null;
+            Semana semanaSiguiente = null;
+            for (int i = 0; i < semanas.size(); i++) {
+                if (semana.getId() != null && semana.getId().equals(semanas.get(i).getId())) {
+                    if (i > 0) {
+                        semanaAnterior = semanas.get(i - 1);
+                    }
+                    if (i < semanas.size() - 1) {
+                        semanaSiguiente = semanas.get(i + 1);
+                    }
+                    break;
+                }
+            }
             List<Tarea> tareas = tareaService.listarPorSemana(semanaId);
             for (Tarea tarea : tareas) {
                 tarea.setArchivos(archivoDAO.listarPorTarea(tarea.getId()));
@@ -51,6 +66,11 @@ public class SemanaDetalleServlet extends HttpServlet {
 
             request.setAttribute("semana", semana);
             request.setAttribute("unidad", unidad);
+            request.setAttribute("unidadAnterior", unidadesVecinas[0]);
+            request.setAttribute("unidadSiguiente", unidadesVecinas[1]);
+            request.setAttribute("semanas", semanas);
+            request.setAttribute("semanaAnterior", semanaAnterior);
+            request.setAttribute("semanaSiguiente", semanaSiguiente);
             request.setAttribute("tareas", tareas);
             request.setAttribute("pageTitle", semana.getTitulo() + " | Portafolio Académico");
             request.setAttribute("breadcrumbLabels", new String[]{
